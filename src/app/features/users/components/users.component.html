@@ -1,0 +1,142 @@
+<app-video></app-video>
+<app-message></app-message>
+<div id="container-user" class="form-container d-flex justify-content-start align-items-start">
+    <!--<div class="form-container d-flex justify-content-center align-items-center"> -->
+      <form class="t-4 l-4 r-4 w-full" [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        <h2 class="text-center mb-4">Cadastro</h2>
+        <div class="row g-3 align-items-center">
+          <div class="mb-1 col-sm-4">
+            <label for="nome" class="form-label">Nome</label>
+            <input type="text" id="nome" class="form-control" formControlName="nome">
+          </div>
+          <div class="mb-1 col-sm-4">
+            <label for="tipoUsuario" class="form-label">Tipo de usuário</label>
+            <select id="tipoUsuario" (ngModelChange)="onTipoContribuinteSelected($event)" class="form-select" formControlName="tipoUsuario">
+              <option value="" disabled selected>Escolha um tipo</option>
+              <option [value]="1">Pessoa Física</option>
+              <option [value]="2">Pessoa Jurídica</option>
+            </select>
+            
+          </div>
+          <div class="mb-1 col-sm-4">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" class="form-control" formControlName="email">
+          </div>
+        </div>
+        <div class="row g-3 align-items-center">
+          <div class="mb-1 col-sm-3">
+            <label id="labelContribuinte" [innerHTML]="htmlContent" for="documentoContribuinte" class="form-label"></label>
+            <input type="text" [mask]="typeDocumentoContribuinte === '1' ? '000.000.000-00' : (typeDocumentoContribuinte === '2' ? '00.000.000/0000-00' : '')"  id="documentoContribuinte" class="form-control" formControlName="documentoContribuinte">
+          </div>
+          <div class="mb-1 col-sm-2">
+            <label for="cep" class="form-label">CEP</label>
+            <input type="text" (focusout)="onFocusOut(1)" mask="00000-000" id="cep" class="form-control" formControlName="cep">
+          </div>
+          <div class="mb-1 col-sm-5">
+            <label for="logradouro" class="form-label">Endereço</label>
+            <input type="text" id="logradouro" class="form-control" formControlName="logradouro">
+          </div>
+          <div class="mb-1 col-sm-2">
+            <label for="numeroEndereco" class="form-label">Número</label>
+            <input type="text" id="numeroEndereco" class="form-control" formControlName="numeroEndereco">
+          </div>
+        </div>
+        <div class="row g-3 align-items-center">
+          <div class="mb-1 col-sm-4">
+            <label for="cidade" class="form-label">Cidade</label>
+            <input type="text" id="cidade" class="form-control" formControlName="cidade">
+          </div>
+          <div class="mb-1 col-sm-4">
+            <label for="bairro" class="form-label">Bairro</label>
+            <input type="text" id="bairro" class="form-control" formControlName="bairro">
+          </div>
+          <div class="mb-1 col-sm-4">
+            <label for="uf" class="form-label">Estado</label>
+            <app-states id="uf" #estadoPrincipal [uf]="userForm.get('uf')?.value" (stateSelected)="onStateSelected($event)">
+            </app-states>
+          </div>
+          
+        </div>
+        <div class="row g-3 align-items-center">
+          <div class="mb-1 col-sm-4">
+            <label for="complementoEndereco" class="form-label">Complemento</label>
+            <input type="text" id="complementoEndereco" class="form-control" formControlName="complementoEndereco">
+          </div>
+          <div class="mb-1 col-sm-3">
+            <label for="cc" class="form-label">DDI (DDD Internacional)</label> <!--(Discagem Direta Internacional)-->
+            <app-phone id="cc" (phoneCodeSelected)="onPhoneCodeSelected($event)"></app-phone>
+          </div>
+          <div class="mb-1 col-sm-2">
+            <label for="ddd" class="form-label">DDD</label>
+            <input type="text" id="ddd" mask="00" class="form-control" formControlName="ddd">
+          </div>
+          <div class="mb-1 col-sm-3">
+            <label for="telefone" class="form-label">Telefone</label>
+            <input type="text" id="telefone" mask="00000-0000" class="form-control" formControlName="telefone">
+          </div>
+        </div>
+        
+        <div class="row g-3 align-items-center">
+          <div class="mb-1 col-sm-4"></div>
+          <div class="mb-1 col-sm-4">
+            <button type="button" class="btn btn-primary w-100 text-center" style="margin-top: 2%;margin-bottom: 1%;" (click)="toggleEndereco()">
+              Endereço Adicional
+            </button>
+          </div>
+          <div class="mb-1 col-sm-4"></div>
+        </div>
+      
+        <div *ngIf="isEnderecoVisible" @expandAnimationbutton>
+          <div class="row g-3 align-items-center">
+            <div class="mb-1 col-sm-2">
+              <label for="cepEnderecoAdicional" class="form-label">CEP</label>
+              <input type="text" (focusout)="onFocusOut(2)" id="cepEnderecoAdicional" mask="00000-000" class="form-control" formControlName="cepEnderecoAdicional">
+            </div>
+            <div class="mb-1 col-sm-5">
+              <label for="logradouroEnderecoAdicional" class="form-label">Endereço</label>
+              <input type="text" id="logradouroEnderecoAdicional" class="form-control" formControlName="logradouroEnderecoAdicional">
+            </div>
+            <div class="mb-1 col-sm-2">
+              <label for="numeroEnderecoAdicional" class="form-label">Número</label>
+              <input type="text" id="numeroEnderecoAdicional" class="form-control" formControlName="numeroEnderecoAdicional">
+            </div>
+            <div class="mb-1 col-sm-3">
+              <label for="cidadeEnderecoAdicional" class="form-label">Cidade</label>
+              <input type="text" id="cidadeEnderecoAdicional" class="form-control" formControlName="cidadeEnderecoAdicional">
+            </div>
+          </div>
+          <div class="row g-3 align-items-center">
+            <div class="mb-1 col-sm-4">
+              <label for="bairroEnderecoAdicional" class="form-label">Bairro</label>
+              <input type="text" id="bairroEnderecoAdicional" class="form-control" formControlName="bairroEnderecoAdicional">
+            </div>
+            <div class="mb-1 col-sm-4">
+              <label for="ufEnderecoAdicional" class="form-label">Estado</label>
+              <app-states id="ufEnderecoAdicional" #estadoEnderecoAdicional [uf]="userForm.get('ufEnderecoAdicional')?.value" (stateSelected)="onStateAditionalSelected($event)">
+              </app-states>
+            </div>
+            <div class="mb-1 col-sm-4">
+              <label for="complementoEnderecoAdicional" class="form-label">Complemento</label>
+              <input type="text" id="complementoEnderecoAdicional" class="form-control" formControlName="complementoEnderecoAdicional">
+            </div>
+          </div>
+        </div>
+        
+        <div class="row g-3 align-items-center justify-content-end">
+          <div class="mb-1 col-sm-12">
+            <button type="submit" class="btn btn-primary w-100" style="margin-top: 1%; margin-bottom: 1%;">Cadastrar</button>
+          </div>
+        </div>
+      </form>
+</div>
+
+  
+
+
+
+    
+  
+  
+
+
+  

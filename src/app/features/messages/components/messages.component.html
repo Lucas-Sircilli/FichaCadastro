@@ -1,0 +1,4 @@
+<div *ngIf="messageService.message$ | async as message" [ngClass]="getMessageClass(message.type)" class="message-box">
+    {{ message.text }}
+  </div>
+  
